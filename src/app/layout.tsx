@@ -16,6 +16,7 @@ import { SiteProvider } from '../components/SiteProvider';
 import { ThemeProvider } from '../components/ThemeProvider';
 import { TokenRefreshManager } from '../components/TokenRefreshManager';
 import TopProgressBar from '../components/TopProgressBar';
+import RouteScrollReset from '../components/RouteScrollReset';
 import ChatFloatingWindow from '../components/watch-room/ChatFloatingWindow';
 import { WatchRoomProvider } from '../components/WatchRoomProvider';
 import { DownloadProvider } from '../contexts/DownloadContext';
@@ -268,6 +269,7 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <TopProgressBar />
+          <RouteScrollReset />
           <TokenRefreshManager />
           <SiteProvider siteName={siteName} announcement={announcement} tmdbApiKey={tmdbApiKey}>
             <WatchRoomProvider>

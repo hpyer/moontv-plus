@@ -102,6 +102,7 @@ export default function MangaReadPage() {
   const requestVerticalPageSyncRef = useRef<(() => void) | null>(null);
   const currentVerticalPageIndexRef = useRef(0);
   const preloadedImageUrlsRef = useRef<Set<string>>(new Set());
+  const activeChapterRef = useRef<HTMLAnchorElement | null>(null);
 
   const getCurrentVerticalPageIndex = () => {
     if (!verticalPageRefs.current.length) return 0;
@@ -642,6 +643,22 @@ export default function MangaReadPage() {
     [chapterList, chapterListDesc]
   );
 
+  useEffect(() => {
+    if (!chapterListOpen) return;
+
+    const rafId = window.requestAnimationFrame(() => {
+      activeChapterRef.current?.scrollIntoView({
+        block: 'center',
+        inline: 'nearest',
+        behavior: 'auto',
+      });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+    };
+  }, [chapterId, chapterListOpen, orderedChapterList]);
+
   const pagedItems = useMemo(() => {
     if (readMode === 'single') {
       return pages[activePage] ? [pages[activePage]] : [];
@@ -798,6 +815,7 @@ export default function MangaReadPage() {
                   return (
                     <Link
                       key={chapter.id}
+                      ref={active ? activeChapterRef : null}
                       href={`/manga/read?mangaId=${mangaId}&sourceId=${sourceId}&chapterId=${chapter.id}&title=${encodeURIComponent(title)}&cover=${encodeURIComponent(cover)}&sourceName=${encodeURIComponent(sourceName)}&chapterName=${encodeURIComponent(chapter.name)}&returnTo=${encodeURIComponent(returnTo)}`}
                       className={`group relative block rounded-2xl px-4 py-3 text-sm transition ${
                         active

@@ -48,7 +48,7 @@ function MangaDetailSkeleton() {
   );
 }
 
-function formatChapterMeta(chapter: MangaChapter): string {
+function formatChapterMeta(chapter: MangaChapter): string | null {
   if (typeof chapter.pageCount === 'number' && chapter.pageCount > 0) {
     return `${chapter.pageCount} 页`;
   }
@@ -64,7 +64,7 @@ function formatChapterMeta(chapter: MangaChapter): string {
     }
   }
 
-  return '日期未知';
+  return null;
 }
 
 export default function MangaDetailPage() {
@@ -264,8 +264,11 @@ export default function MangaDetailPage() {
                   )}
                 </div>
                 <div className='mt-1 text-xs text-gray-500'>
-                  {formatChapterMeta(chapter)}
-                  {active && currentRecord ? ` · 上次看到第 ${currentRecord.pageIndex + 1} 页` : ''}
+                  {(() => {
+                    const meta = formatChapterMeta(chapter);
+                    const progress = active && currentRecord ? `上次看到第 ${currentRecord.pageIndex + 1} 页` : null;
+                    return [meta, progress].filter(Boolean).join(' · ');
+                  })()}
                 </div>
               </Link>
             );
